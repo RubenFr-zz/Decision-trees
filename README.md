@@ -14,7 +14,7 @@ Information Gain: IG (Y, X) = H(Y) - H(Y | X)
 
 ## Remove Column from matrix
 Remove 2nd column of random matrix of dimensions 6x4 -> result dimensions: 6x3 
-```
+```mathematica
 (m = RandomInteger[9, {6, 4}]) // MatrixForm
 Drop[m, None, {2}] // MatrixForm
 ```
