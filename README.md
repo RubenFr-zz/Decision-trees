@@ -20,6 +20,8 @@ Drop[m, None, {2}] // MatrixForm
 ## Entropy with don't cares
 If we have a don't care bit, we need to "duplicate" the rule to include both cases. 
 > To calculate the entropy we take the probability with 2^(# of don't cares)
+### MyEntropy[list]
+Replace the native one in mathematica by taking don't care (**-1**) into account
 ```mathematica
 MyEntropy[li_List] :=
  Module[{list = li, tot, prob, H},
@@ -28,8 +30,10 @@ MyEntropy[li_List] :=
   H = -Sum[prob[[i]] log2[prob[[i]]], {i, Length[list]}] // N
   ]
 ```
+### CondEntropy[list, index]
+Calculate the conditional entropy of the **_list_** for a specific bit (**_index_**)
 ```mathematica
-EntropyWithDontCare[li_List, ind_Integer] :=
+CondEntropy[li_List, ind_Integer] :=
  Module[{list = li, i = ind, c0, c1, H},
   c0 = Drop[#, None, {i}] &@Select[rules, #[[i]] != 1  &];
   c1 = Drop[#, None, {i}] &@Select[rules, #[[i]] != 0 &];
@@ -37,13 +41,14 @@ EntropyWithDontCare[li_List, ind_Integer] :=
         c0] + (Length[c1]/Length[list]) MyEntropy[c1]) // N
   ]
 ```
+### FindBestChoice[list]
+For a given **_list_** return the best index to pick top maximize the **IG**
 ```mathematica
 FindBestChoice[li_List] :=
  Module[{list = li, tot, prob, H, condEntropy, IG, bestCond},
   H = MyEntropy[list];
-  condEntropy = 
-   Table[EntropyWithDontCare[list, i], {i, 2, Length[list[[1]]]}];
-  IG = H - # &@condEntropy;
+  allEntropy = Table[CondEntropy[list, i], {i, 2, Length[list[[1]]]}];
+  IG = H - # &@allEntropy;
   bestCond = Part[#, 1] &@Flatten@Position[IG, Max[IG]]
   ]
 ```
