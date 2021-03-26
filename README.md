@@ -1,5 +1,5 @@
 # Decision-trees
-First assignement in course Machine Learning 2021B
+**First assignement in course Machine Learning 2021B**
 
 ## Formulas
 
@@ -12,7 +12,7 @@ For entropy, the smaller the better (big entropy -> big uncertainty). For IG, th
 
 ## Remove Column from matrix
 Remove 2nd column of random matrix of dimensions 6x4 -> result dimensions: 6x3 
-```mathematica
+```
 (m = RandomInteger[9, {6, 4}]) // MatrixForm
 Drop[m, None, {2}] // MatrixForm
 ```
@@ -20,6 +20,7 @@ Drop[m, None, {2}] // MatrixForm
 ## Entropy with don't cares
 If we have a don't care bit, we need to "duplicate" the rule to include both cases. 
 > To calculate the entropy we take the probability with 2^(# of don't cares)
+
 ### MyEntropy[list]
 Replace the native one in mathematica by taking don't care (**-1**) into account
 ```mathematica
@@ -30,6 +31,7 @@ MyEntropy[li_List] :=
   H = -Sum[prob[[i]] log2[prob[[i]]], {i, Length[list]}] // N
   ]
 ```
+
 ### CondEntropy[list, index]
 Calculate the conditional entropy of the **_list_** for a specific bit (**_index_**)
 ```mathematica
@@ -41,6 +43,7 @@ CondEntropy[li_List, ind_Integer] :=
         c0] + (Length[c1]/Length[list]) MyEntropy[c1]) // N
   ]
 ```
+
 ### FindBestChoice[list]
 For a given **_list_** return the best index to pick top maximize the **IG**
 ```mathematica
@@ -52,6 +55,7 @@ FindBestChoice[li_List] :=
   bestCond = Part[#, 1] &@Flatten@Position[IG, Max[IG]]
   ]
 ```
+
 ## Evaluate timing of a function
 ```mathematica
 timeIt::usage = 
