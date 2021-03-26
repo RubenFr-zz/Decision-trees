@@ -3,7 +3,7 @@ First assignement in course Machine Learning 2021B
 
 ## Extracting rules in Rule.tsv
 
-'''mathematica
+'''
 data = StringSplit[
    StringRiffle[
     Import[Rule.tsv, "\n"];
