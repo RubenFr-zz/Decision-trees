@@ -57,7 +57,7 @@ FindBestChoice[li_List] :=
 ```
 
 ## Evaluate timing of a function
-```mathematica
+```Mathematica
 timeIt::usage = 
   "timeIt[expr] gives the time taken to execute expr,   repeating as \
 many times as necessary to achieve a total time of 1s";
@@ -71,9 +71,23 @@ timeIt[expr_] :=
 
 # Example
 
- | b1 | b2 | b3 | b4
------------- | ------------- | ------------ | -------------
-R1| 1 | 0 | * | *
-R2| 0 | 1 | * | *
-R3| 1 | 1 | 0 | *
-R4| 0 | 1 | 0 | 0
+Rules| b1 | b2 | b3 | b4 
+- | - | - | - | -
+R1| 1 | 0 | * | * 
+R2| 0 | 1 | * | * 
+R3| 1 | 1 | 0 | * 
+R4| 0 | 1 | 0 | 0 
+
+> Every * (don't care) duplicate the rule -> R1 & R2 appear 4 times, R3 twice and R4 only once.
+> In total it is like there are 11 rules
+
+```Mathematica
+H(Rule) = -(4/11 log2(4/11) + 4/11 log2(4/11) + 2/11 log2(2/11) + 1/11 log2(1/11)) = 
+```
+
+#### Conditional Entropy given b1
+```
+H(Rule | b1=0) = 4/5 log2(4/5) + 1/5 log2(1/5)) = 
+H(Rule | b1=1) = 4/6 log2(4/6) + 2/6 log2(1/6)) =
+H(Rule | b1) = 1/2 H(Rule | b1=0) + 1/2 H(Rule | b1=1) =
+```
