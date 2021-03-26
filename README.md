@@ -1,5 +1,5 @@
 # Decision-trees
-**First assignement in course Machine Learning 2021B**
+**First assignement in course Machine Learning 2021B**  :sparkles:
 
 ## Formulas
 
@@ -12,7 +12,7 @@ For entropy, the smaller the better (big entropy -> big uncertainty). For IG, th
 
 ## Remove Column from matrix
 Remove 2nd column of random matrix of dimensions 6x4 -> result dimensions: 6x3 
-```
+```mathematica
 (m = RandomInteger[9, {6, 4}]) // MatrixForm
 Drop[m, None, {2}] // MatrixForm
 ```
@@ -68,3 +68,12 @@ timeIt[expr_] :=
   While[t < 1., tries *= 2; t = Timing[Do[expr, {tries}];][[1]];];
   t/tries]
 ```
+
+# Example
+
+ | b1 | b2 | b3 | b4
+------------ | ------------- | ------------ | -------------
+R1| 1 | 0 | * | *
+R2| 0 | 1 | * | *
+R3| 1 | 1 | 0 | *
+R4| 0 | 1 | 0 | 0
