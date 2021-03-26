@@ -1,34 +1,20 @@
 # Decision-trees
 First assignement in course Machine Learning 2021B
 
-## Extracting rules in Rule.tsv
+## Formulas
 
-```mathematica
-data = StringSplit[
-   StringRiffle[
-    Import[Rule.tsv, "\n"];
-data = StringSplit[#, {".", ":"}] & /@ 
-     StringSplit[#, {"@", " 0x", "/0x", " ", "/"}] & /@ data;
+```
+Entropy: H(X) = - Σx P(X=x) log2(P(X=x))
 
-sourceMask = ToExpression /@ Flatten@data[[All, 2]];
-Flatten@IntegerDigits[#, 2, 8] & /@ ToExpression /@ data[[All, 1]];
-sourceIP = 
-  Join[Take[%[[#]], sourceMask[[#]]], 
-     Table[-1, {32 - sourceMask[[#]]}]] & /@ Range[1, Length[%]];
+Conditional Entropy: H(Y, X) =Σx P(X = x) H(Y | X = x)
 
-destinationMask = ToExpression /@ Flatten@data[[All, 4]];
-Flatten@IntegerDigits[#, 2, 8] & /@ ToExpression /@ data[[All, 3]];
-destinationIP = 
-  Join[Take[%[[#]], destinationMask[[#]]], 
-     Table[-1, {k, 32 - destinationMask[[#]]}]] & /@ Range[Length[%]];
+Information Gain: IG (Y, X) = H(Y) - H(Y | X)
+```
 
-sourcePort = data[[All, 5]];
-destinationPort = data[[All, 6]];
-protocol1 = FromDigits[#, 16] & /@ Flatten@data[[All, 7]];
-protocol2 = FromDigits[#, 16] & /@ Flatten@data[[All, 8]];
 
-rules = Flatten /@ 
-   Transpose@
-    List[sourceIP, destinationIP, sourcePort, destinationPort, 
-     protocol1, protocol2];
+## Remove Column from matrix
+Remove 2nd column of random matrix of dimensions 6x4 -> result dimensions: 6x3 
+```
+(m = RandomInteger[9, {6, 4}]) // MatrixForm
+Drop[m, None, {2}] // MatrixForm
 ```
