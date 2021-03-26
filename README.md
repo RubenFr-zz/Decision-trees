@@ -29,8 +29,7 @@ IG = H - # &@ condEntropy;
 ```
 ```mathematica
 EntropyWithDontCare[li_List, ind_Integer] :=
- Module[{list = li, i = ind, tot, tot0, tot1, c0, c1, prob0, prob1, 
-   H0, H1, H},
+ Module[{list = li, i = ind, tot, tot0, tot1, c0, c1, prob0, prob1, H0, H1, H},
   c0 = Drop[#, None, {i}] &@Select[rules, #[[i]] != 1  &];
   tot0 = 2^Count[-1] /@ c0 ;
   prob0 = (tot0/(Total@tot0)) // N;
@@ -43,4 +42,17 @@ EntropyWithDontCare[li_List, ind_Integer] :=
   
   H = ((Length[c0]/Length[li]) H0 + (Length[c1]/Length[li]) H1) // N
   ]
+```
+
+## Function timeIt[function_]
+```mathematica
+timeIt::usage = 
+  "timeIt[expr] gives the time taken to execute expr,   repeating as \
+many times as necessary to achieve a total time of 1s";
+
+SetAttributes[timeIt, HoldAll]
+timeIt[expr_] := 
+ Module[{t = Timing[expr;][[1]], tries = 1}, 
+  While[t < 1., tries *= 2; t = Timing[Do[expr, {tries}];][[1]];];
+  t/tries]
 ```
