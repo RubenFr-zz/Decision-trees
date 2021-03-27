@@ -131,7 +131,7 @@ IG(Rule, b4) = H(rule) - H(Rule | b1) = 0.074644
 ![graph1](https://mermaid.ink/img/eyJjb2RlIjoiXG5ncmFwaCBURDtcbiAgICBBW1IxLFIyLFIzLFI0XS0tPnxiMT0wfEJbUjIsUjRdO1xuICAgIEEtLT58YjE9MXxDW1IxLFIyXTtcbiIsIm1lcm1haWQiOnsidGhlbWUiOiJkZWZhdWx0In0sInVwZGF0ZUVkaXRvciI6ZmFsc2V9)
 
 <details>
-<summary>See code [Mermaid](https://mermaid-js.github.io/mermaid/#/flowchart?id=flowcharts-basic-syntax)</summary>
+<summary>See code [Mermaid][1]</summary>
 ```mermaid
 graph TD;
     A[R1,R2,R3,R4]-->|b1=0|B[R2,R4];
@@ -143,8 +143,8 @@ graph TD;
 
 Rules| b<sub>2</sub> | b<sub>3</sub> | b<sub>4</sub>
 -- | - | -- | -
-R<sub>2</sub> | 1 | \* | \* 
-R<sub>4</sub> | 1 | 0  | 0 
+R<sub>2</sub>  | 1 | \* | \* 
+R<sub>4</sub>  | 1 | 0  | 0 
 
 ```Mathematica
 H(Rule) = -(4/5 log2[4/5] + 1/5 log2[1/5]) = 0.721928
@@ -206,7 +206,7 @@ IG(Rule, b3) = H(rule) - H(Rule | b3) = -0.196368
 ![Graph2](https://mermaid.ink/img/eyJjb2RlIjoiXG5ncmFwaCBURDtcbiAgICBBW1IxLFIyLFIzLFI0XS0tPnxiMT0wfEJbUjIsUjRdO1xuICAgIEEtLT58YjE9MXxDW1IxLFIyXTtcbiAgICBDLS0-fGIyPTB8RFtSMV1cbiAgICBDLS0-fGIyPTF8RVtSM11cbiAgICBCLS0-fGIzPTB8RltSMixSNF1cbiAgICBCLS0-fGIzPTF8R1tSMl0iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlfQ)
 
 <details>
-<summary>See code [Mermaid](https://mermaid-js.github.io/mermaid/#/flowchart?id=flowcharts-basic-syntax)</summary>
+<summary>See code [Mermaid][1]</summary>
 ```mermaid
 graph TD;
     A[R1,R2,R3,R4]-->|b1=0|B[R2,R4];
@@ -217,3 +217,5 @@ graph TD;
     B-->|b3=1|G[R2]
 ```
 </details>
+
+[1]:(https://mermaid-js.github.io/mermaid/#/flowchart?id=flowcharts-basic-syntax)
