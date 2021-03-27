@@ -8,7 +8,7 @@
 > * Information Gain: IG (Y, X) = H(Y) - H(Y | X)
 
 For entropy, the smaller the better (big entropy -> big uncertainty). For IG, the higher the better. 
-> H(x) = 0 -> no uncertainty
+> H(x) = 0 &rarr; no uncertainty
 
 ## Remove Column from matrix
 Remove 2nd column of random matrix of dimensions 6x4 &rarr; result dimensions: 6x3 
@@ -98,32 +98,32 @@ H(Rule) = -(4/11 log2[4/11] + 4/11 log2[4/11] + 2/11 log2[2/11] + 1/11 log2[1/11
 ```Mathematica
 H(Rule | b1=0) = - (4/5 log2[4/5] + 1/5 log2[1/5]) = 0.721928
 H(Rule | b1=1) = - (4/6 log2[4/6] + 2/6 log2[1/6]) = 1.25163
-H(Rule | b1) = 1/2 H(Rule | b1=0) + 1/2 H(Rule | b1=1) = 0.986779
-IG(Rule, b1) = H(rule) - H(Rule | b1) = 0.836289
+H(Rule | b1) = 5/11 H(Rule | b1=0) + 6/11 H(Rule | b1=1) = 1.01086
+IG(Rule, b1) = H(rule) - H(Rule | b1) = 0.812214
 ```
 
 #### Conditional Entropy given b<sub>2</sub>
 ```Mathematica
-H(Rule | b2=0) = - log2[1] = 0
+H(Rule | b2=0) = - 4/4 log2[4/4] = 0
 H(Rule | b2=1) = - (4/7 log2[4/7] + 2/7 log2[2/7] + 1/7 log2[1/7]) = 1.37878
-H(Rule | b2) = 1/4 H(Rule | b2=0) + 3/4 H(Rule | b2=1) = 1.03409
-IG(Rule, b2) = H(rule) - H(Rule | b2) = 0.78898
+H(Rule | b2) = 4/11 H(Rule | b2=0) + 7/11 H(Rule | b2=1) = 0.877408
+IG(Rule, b2) = H(rule) - H(Rule | b2) = 0.945662
 ```
 
 #### Conditional Entropy given b<sub>3</sub>
 ```Mathematica
 H(Rule | b3=0) = - (2/7 log2[2/7] + 2/7 log2[2/7] + 2/7 log2[2/7] + 1/7 log2[1/7]) = 1.95021
 H(Rule | b3=1) = - (2/4 log2[2/4] + 2/4 log2[2/4]) = 1
-H(Rule | b3) = 1/2 H(Rule | b3=0) + 1/2 H(Rule | b3=1) = 1.63347
-IG(Rule, b3) = H(rule) - H(Rule | b3) = 0.189593
+H(Rule | b3) = 7/11 H(Rule | b3=0) + 4/11 H(Rule | b3=1) = 1.81247
+IG(Rule, b3) = H(rule) - H(Rule | b3) = 0.0105987
 ```
 
 #### Conditional Entropy given b<sub>4</sub>
 ```Mathematica
 H(Rule | b4=0) = - (2/6 log2[2/6] + 2/6 log2[2/6] + 1/6 log2[1/6] + 1/6 log2[1/6]) = 1.9183
 H(Rule | b4=1) = - (2/5 log2[2/5] + 2/5 log2[2/5] + 1/5 log2[1/5]) = 1.52193
-H(Rule | b4) = 4/7 H(Rule | b1=0) + 3/7 H(Rule | b1=1) = 1.74842
-IG(Rule, b4) = H(rule) - H(Rule | b1) = 0.074644
+H(Rule | b4) = 6/11 H(Rule | b1=0) + 5/7 H(Rule | b1=1) = 2.13344
+IG(Rule, b4) = H(rule) - H(Rule | b1) = -0.310368
 ```
 
 > The best pick is the one with the highest Information Gain (IG) &rarr; b<sub>1</sub>
@@ -220,5 +220,10 @@ graph TD;
 </pre>
 </details>
 
+<br>
+
+---
+
 # References
-Graphs: [Mermaid](https://mermaid-js.github.io/mermaid/#/flowchart?id=flowcharts-basic-syntax)
+* BGU: [https://bgu.ac.il](https://in.bgu.ac.il/en/Pages/default.aspx)   
+* Graphs: [Mermaid](https://mermaid-js.github.io/mermaid/#/flowchart?id=flowcharts-basic-syntax)
