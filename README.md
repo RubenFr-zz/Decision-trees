@@ -1,5 +1,5 @@
 # Decision-trees
-**First assignement in course Machine Learning 2021B at BGU**  :sparkles:
+**First assignement in course Machine Learning 2021B at [BGU](https://in.bgu.ac.il/en/Pages/default.aspx)**  :sparkles:
 
 ## Formulas
 
