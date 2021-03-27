@@ -131,7 +131,7 @@ IG(Rule, b4) = H(rule) - H(Rule | b1) = 0.074644
 ![graph1](https://mermaid.ink/img/eyJjb2RlIjoiXG5ncmFwaCBURDtcbiAgICBBW1IxLFIyLFIzLFI0XS0tPnxiMT0wfEJbUjIsUjRdO1xuICAgIEEtLT58YjE9MXxDW1IxLFIyXTtcbiIsIm1lcm1haWQiOnsidGhlbWUiOiJkZWZhdWx0In0sInVwZGF0ZUVkaXRvciI6ZmFsc2V9)
 
 <details>
-<summary>See code [Mermaid](https://mermaid-js.github.io/mermaid/#/flowchart?id=flowcharts-basic-syntax)</summary>
+<summary>See code</summary>
 <br>
 <pre>
 graph TD;
