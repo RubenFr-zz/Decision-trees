@@ -131,12 +131,13 @@ IG(Rule, b4) = H(rule) - H(Rule | b1) = 0.074644
 ![graph1](https://mermaid.ink/img/eyJjb2RlIjoiXG5ncmFwaCBURDtcbiAgICBBW1IxLFIyLFIzLFI0XS0tPnxiMT0wfEJbUjIsUjRdO1xuICAgIEEtLT58YjE9MXxDW1IxLFIyXTtcbiIsIm1lcm1haWQiOnsidGhlbWUiOiJkZWZhdWx0In0sInVwZGF0ZUVkaXRvciI6ZmFsc2V9)
 
 <details>
-<summary>See code [Mermaid][1]</summary>
-```mermaid
+<summary>See code [Mermaid](https://mermaid-js.github.io/mermaid/#/flowchart?id=flowcharts-basic-syntax)</summary>
+<br>
+<pre>
 graph TD;
     A[R1,R2,R3,R4]-->|b1=0|B[R2,R4];
     A-->|b1=1|B[R1,R2];
-```
+</pre>
 </details>
 
 ## Second Iteration (left)
@@ -206,8 +207,9 @@ IG(Rule, b3) = H(rule) - H(Rule | b3) = -0.196368
 ![Graph2](https://mermaid.ink/img/eyJjb2RlIjoiXG5ncmFwaCBURDtcbiAgICBBW1IxLFIyLFIzLFI0XS0tPnxiMT0wfEJbUjIsUjRdO1xuICAgIEEtLT58YjE9MXxDW1IxLFIyXTtcbiAgICBDLS0-fGIyPTB8RFtSMV1cbiAgICBDLS0-fGIyPTF8RVtSM11cbiAgICBCLS0-fGIzPTB8RltSMixSNF1cbiAgICBCLS0-fGIzPTF8R1tSMl0iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlfQ)
 
 <details>
-<summary>See code [Mermaid][1]</summary>
-```mermaid
+<summary>See code</summary>
+<br>
+<pre>
 graph TD;
     A[R1,R2,R3,R4]-->|b1=0|B[R2,R4];
     A-->|b1=1|C[R1,R2];
@@ -215,7 +217,8 @@ graph TD;
     C-->|b2=1|E[R3]
     B-->|b3=0|F[R2,R4]
     B-->|b3=1|G[R2]
-```
+</pre>
 </details>
 
-[1]:(https://mermaid-js.github.io/mermaid/#/flowchart?id=flowcharts-basic-syntax)
+# References
+Graphs: [Mermaid](https://mermaid-js.github.io/mermaid/#/flowchart?id=flowcharts-basic-syntax)
