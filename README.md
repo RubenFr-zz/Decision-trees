@@ -1,4 +1,4 @@
-# Decision-trees
+# Decision Trees
 **First assignement in course Machine Learning 2021B at [BGU](https://in.bgu.ac.il/en/Pages/default.aspx)**  :sparkles:
 
 ## Formulas
@@ -9,13 +9,6 @@
 
 For entropy, the smaller the better (big entropy -> big uncertainty). For IG, the higher the better. 
 > H(x) = 0 &rarr; no uncertainty
-
-## Remove Column from matrix
-Remove 2nd column of random matrix of dimensions 6x4 &rarr; result dimensions: 6x3 
-```Mathematica
-(m = RandomInteger[9, {6, 4}]) // MatrixForm
-Drop[m, None, {2}] // MatrixForm
-```
 
 ## Entropy & Information Gain (IG) with don't cares
 If we have a don't care bit, we need to "duplicate" the rule to include both cases. 
@@ -42,19 +35,29 @@ IG(R, b_{j}) &= H(R) - \frac{N_0 + N_\Phi}{N_{tot}}H(R | b_{j}=0) - \frac{N_1 + 
 </pre>
 </details>
 
-## Evaluate timing of a function
+### IG[list, index]
 ```Mathematica
-timeIt::usage = 
-  "timeIt[expr] gives the time taken to execute expr,   repeating as \
-many times as necessary to achieve a total time of 1s";
-
-SetAttributes[timeIt, HoldAll]
-timeIt[expr_] := 
- Module[{t = Timing[expr;][[1]], tries = 1}, 
-  While[t < 1., tries *= 2; t = Timing[Do[expr, {tries}];][[1]];];
-  t/tries]
+IG[li_List, index_Integer] :=
+ Module[{list = li, i = index, Nt, N0, N1, N2, c0, c1, c2, res},
+  c0 = Drop[#, None, {i}] &@Select[list, #[[i]] == 0  &];
+  c1 = Drop[#, None, {i}] &@Select[list, #[[i]] == 1 &];
+  c2 = Drop[#, None, {i}] &@Select[list, #[[i]] == -1 &];
+  N0 = Total[2^Count[-1] /@ c0];
+  N1 = Total[2^Count[-1] /@ c1];
+  N2 = Total[2^Count[-1] /@ c2];
+  Nt = N0 + N1 + 2 N2;
+  res = log2[Nt] - ((N0 + N2) log2[N0 + N2] + (N1 + N2) log2[N1 + N2] + 2 N2)/Nt // N
+  ]
 ```
 
+### FindBestChoice[list]
+```Mathematica
+FindBestChoice[li_List] :=
+ Module[{list = li, ig},
+  ig = Table[IG[list, i], {i, 2, Length[list[[1]]]}];
+  {Position[ig, Max[ig]][[1, 1]], Max[ig] >= 0}
+  ]
+```
 # Example
 
 Rules| b<sub>1</sub> | b<sub>2</sub> | b<sub>3</sub> | b<sub>4</sub>
@@ -201,8 +204,33 @@ graph TD;
 
 ---
 
+# Trics Mathematica
+
+## Remove Column from matrix
+Remove 2nd column of random matrix of dimensions 6x4 &rarr; result dimensions: 6x3 
+```Mathematica
+(m = RandomInteger[9, {6, 4}]) // MatrixForm
+Drop[m, None, {2}] // MatrixForm
+```
+
+
+## Evaluate timing of a function
+```Mathematica
+timeIt::usage = 
+  "timeIt[expr] gives the time taken to execute expr,   repeating as \
+many times as necessary to achieve a total time of 1s";
+
+SetAttributes[timeIt, HoldAll]
+timeIt[expr_] := 
+ Module[{t = Timing[expr;][[1]], tries = 1}, 
+  While[t < 1., tries *= 2; t = Timing[Do[expr, {tries}];][[1]];];
+  t/tries]
+```
+
+---
+
 # References
 * BGU: [https://bgu.ac.il](https://in.bgu.ac.il/en/Pages/default.aspx)   
-* Graphs: [Mermaid](https://mermaid-js.github.io/mermaid/#/flowchart?id=flowcharts-basic-syntax)
+* Flowcharts: [Mermaid](https://mermaid-js.github.io/mermaid/#/flowchart?id=flowcharts-basic-syntax)
 
 <!--https://mermaid-js.github.io/mermaid-live-editor/#/edit/eyJjb2RlIjoiXG5ncmFwaCBURDtcbiAgICBBW1IxLFIyLFIzLFI0XS0tPnxiMT0wfEJbUjIsUjRdO1xuICAgIEEtLT58YjE9MXxDW1IxLFIyXTtcbiAgICBDLS0-fGIyPTB8RFtSMV1cbiAgICBDLS0-fGIyPTF8RVtSM11cbiAgICBCLS0-fGIzPTB8RltSMixSNF1cbiAgICBCLS0-fGIzPTF8R1tSMl0iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlfQ-->
