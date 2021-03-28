@@ -28,12 +28,19 @@ In order to compute the Entropy and IG we let's define new variables:
 * **N<sub>&Phi;</sub>: # of rules where b<sub>j</sub> = &Phi; (note this is half the # of rules with 0/1)**
 * **N<sub>tot</sub> = N<sub>0</sub> + N<sub>0</sub> + 2 N<sub>&Phi;**
 
-<img src="https://latex.codecogs.com/svg.latex?\large&space;H(R | b_{j}=0)=log_2(N_{0}+N_{\Phi}) -\frac{1}{N} \[ \sum_{b_{j}=0} N_{r_{i}} log_2{N_{r_{i}}} + \sum_{b_{j}=\Phi} \frac{N_{r_{i}}}{2} log_2{N_{r_{i}}} - \sum_{b_{j}=\Phi} \frac{N_{r_{i}}}{2} \]" title="H(R | b_{j}=0)" />
+![equation](https://latex.codecogs.com/gif.latex?%5Cdpi%7B100%7D%20%5Csmall%20%5Cbegin%7Baligned%7D%20H%28R%20%7C%20b_%7Bj%7D%3D0%29%20%26%3Dlog_2%28N_%7B0%7D&plus;N_%7B%5CPhi%7D%29%20-%5Cfrac%7B1%7D%7BN%7D%20%5C%5B%20%5Csum_%7Bb_%7Bj%7D%3D0%7D%20N_%7Br_%7Bi%7D%7D%20log_2%7BN_%7Br_%7Bi%7D%7D%7D%20&plus;%20%5Csum_%7Bb_%7Bj%7D%3D%5CPhi%7D%20%5Cfrac%7BN_%7Br_%7Bi%7D%7D%7D%7B2%7D%20log_2%7BN_%7Br_%7Bi%7D%7D%7D%20-%20%5Csum_%7Bb_%7Bj%7D%3D%5CPhi%7D%20%5Cfrac%7BN_%7Br_%7Bi%7D%7D%7D%7B2%7D%20%5C%5D%20%5C%5C%20IG%28R%2C%20b_%7Bj%7D%29%20%26%3D%20H%28R%29%20-%20%5Cfrac%7BN_0%20&plus;%20N_%5CPhi%7D%7BN_%7Btot%7D%7DH%28R%20%7C%20b_%7Bj%7D%3D0%29%20-%20%5Cfrac%7BN_1%20&plus;%20N_%5CPhi%7D%7BN_%7Btot%7D%7DH%28R%20%7C%20b_%7Bj%7D%3D1%29%20%5C%5C%20%26%3D%20log_2%20N_%7Btot%7D%20-%20%5Cfrac%7B1%7D%7BN_%7Btot%7D%7D%20%5C%5B%20%28N_0%20&plus;%20N_%5CPhi%29%20log_2%28N_%7B0%7D&plus;N_%7B%5CPhi%7D%29%20&plus;%20%28N_1%20&plus;%20N_%5CPhi%29%20log_2%28N_%7B1%7D&plus;N_%7B%5CPhi%7D%29%20&plus;%202%20N_%5CPhi%5C%5D%20%5Cend%7Baligned%7D)
 
-
-<img src="https://latex.codecogs.com/svg.latex?\Large&space;\begin{aligned} IG(R, b_{j}) &= H(R) - \frac{N_0 + N_\Phi}{N_{tot}}H(R | b_{j}=0) - \frac{N_1 + N_\Phi}{N_{tot}}H(R | b_{j}=1) \\ &= log_2 N_{tot} - \frac{1}{N_{tot}} \[ (N_0 + N_\Phi) log_2(N_{0}+N_{\Phi}) +  (N_1 + N_\Phi) log_2(N_{1}+N_{\Phi}) + 2 N_\Phi\] 
-\end{aligned}" title="IG(R, b_{j}) Syntesys" />
-
+<details>
+<summary>See code</summary>
+<br>LaTEX
+<pre>
+\begin{aligned} 
+H(R | b_{j}=0) &= log_2(N_{0}+N_{\Phi}) -\frac{1}{N} \[ \sum_{b_{j}=0} N_{r_{i}} log_2{N_{r_{i}}} + \sum_{b_{j}=\Phi} \frac{N_{r_{i}}}{2} log_2{N_{r_{i}}} - \sum_{b_{j}=\Phi} \frac{N_{r_{i}}}{2} \] \\
+IG(R, b_{j}) &= H(R) - \frac{N_0 + N_\Phi}{N_{tot}}H(R | b_{j}=0) - \frac{N_1 + N_\Phi}{N_{tot}}H(R | b_{j}=1) \\ 
+&= log_2 N_{tot} - \frac{1}{N_{tot}} \[ (N_0 + N_\Phi) log_2(N_{0}+N_{\Phi}) +  (N_1 + N_\Phi) log_2(N_{1}+N_{\Phi}) + 2 N_\Phi\] 
+\end{aligned}
+</pre>
+</details>
 
 ## Evaluate timing of a function
 ```Mathematica
