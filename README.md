@@ -1,5 +1,6 @@
 # Decision Trees
-**First assignement in course Machine Learning 2021B at [BGU](https://in.bgu.ac.il/en/Pages/default.aspx)**  :sparkles:
+**First assignement in course Machine Learning 2021B at [BGU](https://in.bgu.ac.il/en/Pages/default.aspx)**  :sparkles:  
+All the code is in the Wolfram Mathematica language
 
 ## Formulas
 
@@ -53,11 +54,72 @@ IG[li_List, index_Integer] :=
 ### FindBestChoice[list]
 ```Mathematica
 FindBestChoice[li_List] :=
- Module[{list = li, ig},
+ Module[{list = li, ig, best, left0, right1},
   ig = Table[IG[list, i], {i, 2, Length[list[[1]]]}];
-  {Position[ig, Max[ig]][[1, 1]], Max[ig] >= 0}
+  best = Position[ig, Max[ig]][[1, 1]];
+  left0 = Drop[#, None, {best + 1}] &@Select[list, #[[best + 1]] != 1  &];
+  right1 = Drop[#, None, {best + 1}] &@Select[list, #[[best + 1]] != 0 &];
+  {best, left0, right1, Max[ig] >= 0}
   ]
 ```
+The returned value is a tuple of:
+* The best choice
+* The sublist of rules for which b<sub>best choice</sub> = 0 or &Phi;
+* The sublist of rules for which b<sub>best choice</sub> = 1 or &Phi;
+* Do we need to continue decending ? If <kbd>true</kbd> that means we can improve the tree. If <kbd>false</kbd> that means the current level is a leaf.
+
+## Binary range with don't cares
+
+### Example - [5:18]
+> We need to divide in 5 ranges: {5, {6,7}, {8,15}, {16,17}, 18}
+
+
+|         |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
+|---------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 5       | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 1
+| [6:7]   | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | &Phi;
+| [8:15]  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | &Phi; | &Phi; | &Phi;
+| [16:17] | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | &Phi;
+| 18      | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0
+|         |   |   |   |   |
+
+### ProcessRange[{a,b}]
+Return the list of the divisions with don't cares &Phi of the range [a,b]
+```Mathematica 
+ProcessRange[{0, 65535}] = GenerateRange[{0, 65535}];
+ProcessRange[{a_Integer, b_Integer}] := GenerateRange /@ BinaryRange[a, b] // Reverse;
+```
+
+### GenerateRange[{a,b}]
+Return a binary form of the range [a,b] with don't cares &Phi;
+```Mathematica
+GenerateRange[{x_Integer, y_Integer}] /; x == y := IntegerDigits[x, 2, 16];
+GenerateRange[{x_Integer, y_Integer}] :=
+  ReplacePart[List /@ Range[Position[IntegerDigits[BitXor[x, y], 2, 16], 1][[1, 1]],
+       16] -> \[Phi]][IntegerDigits[x, 2, 16]];
+```
+
+### NextPart[min,max]
+Return the next valid {?,max} interval
+```Mathematica
+NextPart[min_, max_?EvenQ] := max;
+NextPart[min_, max_] := FindInterval[min, PrevPerfectPower2[max], max];
+```
+```Mathematica
+FindInterval[min_, a_, b_] /; a < min := FindInterval[min, a + Length@Range[a, b]/2, b];
+FindInterval[min_, a_, b_] /; PerfectPower2[Length@Range[a, b]] := a
+FindInterval[min_, a_, b_] := FindInterval[min, a + PrevPerfectPower2[Length@Range[a, b]], b];
+```
+
+### Helpful Functions
+```Mathematica
+PerfectPower2[int_Integer?Positive] := BitAnd[int, int - 1] == 0;
+PerfectPower2[_] := False;
+```
+```Mathematica
+PrevPerfectPower2[n_Integer?Positive] := 2^Floor[Log2[n]];
+```
+
 # Example
 
 Rules| b<sub>1</sub> | b<sub>2</sub> | b<sub>3</sub> | b<sub>4</sub>
@@ -204,7 +266,7 @@ graph TD;
 
 ---
 
-# Trics Mathematica
+# Trics in Mathematica
 
 ## Remove Column from matrix
 Remove 2nd column of random matrix of dimensions 6x4 &rarr; result dimensions: 6x3 
@@ -226,6 +288,7 @@ timeIt[expr_] :=
   While[t < 1., tries *= 2; t = Timing[Do[expr, {tries}];][[1]];];
   t/tries]
 ```
+<br>
 
 ---
 
@@ -234,3 +297,5 @@ timeIt[expr_] :=
 * Flowcharts: [Mermaid](https://mermaid-js.github.io/mermaid/#/flowchart?id=flowcharts-basic-syntax)
 
 <!--https://mermaid-js.github.io/mermaid-live-editor/#/edit/eyJjb2RlIjoiXG5ncmFwaCBURDtcbiAgICBBW1IxLFIyLFIzLFI0XS0tPnxiMT0wfEJbUjIsUjRdO1xuICAgIEEtLT58YjE9MXxDW1IxLFIyXTtcbiAgICBDLS0-fGIyPTB8RFtSMV1cbiAgICBDLS0-fGIyPTF8RVtSM11cbiAgICBCLS0-fGIzPTB8RltSMixSNF1cbiAgICBCLS0-fGIzPTF8R1tSMl0iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlfQ-->
+
+<!--https://www.codecogs.com/latex/eqneditor.php-->
