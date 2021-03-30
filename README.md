@@ -170,7 +170,7 @@ IG(Rule, b4) = H(rule) - H(Rule | b1) = 0.0849413
 
 > The best pick is the one with the highest Information Gain (IG) &rarr; b<sub>1</sub>
 
-![graph1](https://mermaid.ink/img/eyJjb2RlIjoiXG5ncmFwaCBURDtcbiAgICBBW1IxLFIyLFIzLFI0XS0tPnxiMT0wfEJbUjIsUjRdO1xuICAgIEEtLT58YjE9MXxDW1IxLFIyXTtcbiIsIm1lcm1haWQiOnsidGhlbWUiOiJkZWZhdWx0In0sInVwZGF0ZUVkaXRvciI6ZmFsc2V9)
+[![](https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggVEQ7XG4gICAgQVtSMSxSMixSMyxSNF0tLT58YjE9MHxCW1IyLFI0XTtcbiAgICBBLS0-fGIxPTF8Q1tSMSxSMl07XG4iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlfQ)](https://mermaid-js.github.io/mermaid-live-editor/#/edit/eyJjb2RlIjoiZ3JhcGggVEQ7XG4gICAgQVtSMSxSMixSMyxSNF0tLT58YjE9MHxCW1IyLFI0XTtcbiAgICBBLS0-fGIxPTF8Q1tSMSxSMl07XG4iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlfQ)
 
 <details>
 <summary>See code</summary>
@@ -178,11 +178,12 @@ IG(Rule, b4) = H(rule) - H(Rule | b1) = 0.0849413
 <pre>
 graph TD;
     A[R1,R2,R3,R4]-->|b1=0|B[R2,R4];
-    A-->|b1=1|B[R1,R2];
+    A-->|b1=1|C[R1,R2];
 </pre>
 </details>
 
-## Second Iteration (left)
+## Second Iteration 
+### Left
 
 Rules| b<sub>2</sub> | b<sub>3</sub> | b<sub>4</sub>
 -- | - | -- | -
@@ -205,11 +206,13 @@ IG(Rule, b2) = H(rule) - H(Rule | b2) = 0
 ```Mathematica
 H(Rule | b3=0) = - (2/3 log2[2/3] + 1/3 log2[1/3]) = 0.918296
 H(Rule | b3=1) = 0
-H(Rule | b3) = 2/3 H(Rule | b3=0) = 0.612197
-IG(Rule, b3) = H(rule) - H(Rule | b3) = 0.109731
+H(Rule | b3) = 3/5 H(Rule | b3=0) = 0.550978
+IG(Rule, b3) = H(rule) - H(Rule | b3) = 0.170951
 ```
 
-## Second Iteration (rigth)
+> The best pick is the one with the highest Information Gain (IG) &rarr; b<sub>3</sub>
+
+### Rigth
 
 Rules| b<sub>2</sub> | b<sub>3</sub> | b<sub>4</sub>
 -- | - | -- | -
@@ -217,7 +220,7 @@ R<sub>1</sub> | 0 | &Phi; | &Phi;
 R<sub>3</sub> | 1 | 0  | &Phi;
 
 ```Mathematica
-H(Rule) = -(4/5 log2[4/5] + 1/5 log2[1/5]) = 0.721928
+H(Rule) = -(4/6 log2[4/6] + 2/6 log2[2/6]) = 0.918296
 ```
 
 #### Conditional Entropy given b<sub>2</sub>
@@ -225,15 +228,15 @@ H(Rule) = -(4/5 log2[4/5] + 1/5 log2[1/5]) = 0.721928
 H(Rule | b2=0) = 0
 H(Rule | b2=1) = 0
 H(Rule | b2) = 0
-IG(Rule, b2) = H(rule) - H(Rule | b2) = 0.721928
+IG(Rule, b2) = H(rule) - H(Rule | b2) = 0.918296
 ```
 
 #### Conditional Entropy given b<sub>3</sub>
 ```Mathematica
-H(Rule | b3=0) = - (2/3 log2[2/3] + 1/3 log2[1/3]) = 0.918296
+H(Rule | b3=0) = - (2/4 log2[2/4] + 2/4 log2[2/4]) = 1
 H(Rule | b3=1) = 0
-H(Rule | b3) = 2/3 H(Rule | b3=0) = 0.612197
-IG(Rule, b3) = H(rule) - H(Rule | b3) = 0.109731
+H(Rule | b3) = 4/6 H(Rule | b3=0) = 0.666667
+IG(Rule, b3) = H(rule) - H(Rule | b3) = 0.251629
 ```
 
 #### Conditional Entropy given b<sub>4</sub>
@@ -241,12 +244,11 @@ IG(Rule, b3) = H(rule) - H(Rule | b3) = 0.109731
 H(Rule | b3=0) = - (2/3 log2[2/3] + 1/3 log2[1/3]) = 0.918296
 H(Rule | b3=1) = - (2/3 log2[2/3] + 1/3 log2[1/3]) = 0.918296
 H(Rule | b3) = 0.918296
-IG(Rule, b3) = H(rule) - H(Rule | b3) = -0.196368
+IG(Rule, b3) = H(rule) - H(Rule | b3) = 0
 ```
+> The best pick is the one with the highest Information Gain (IG) &rarr; b<sub>2</sub>
 
-> Finaly we get: 
-
-![Graph2](https://mermaid.ink/img/eyJjb2RlIjoiXG5ncmFwaCBURDtcbiAgICBBW1IxLFIyLFIzLFI0XS0tPnxiMT0wfEJbUjIsUjRdO1xuICAgIEEtLT58YjE9MXxDW1IxLFIyXTtcbiAgICBDLS0-fGIyPTB8RFtSMV1cbiAgICBDLS0-fGIyPTF8RVtSM11cbiAgICBCLS0-fGIzPTB8RltSMixSNF1cbiAgICBCLS0-fGIzPTF8R1tSMl0iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlfQ)
+[![](https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggVEQ7XG4gICAgQVtSMSxSMixSMyxSNF0tLT58YjE9MHxCW1IyLFI0XTtcbiAgICBBLS0-fGIxPTF8Q1tSMSxSMl07XG4gICAgQy0tPnxiMj0wfERbUjFdXG4gICAgQy0tPnxiMj0xfEVbUjNdXG4gICAgQi0tPnxiMz0wfEZbUjIsUjRdXG4gICAgQi0tPnxiMz0xfEdbUjJdIiwibWVybWFpZCI6eyJ0aGVtZSI6ImRlZmF1bHQifSwidXBkYXRlRWRpdG9yIjpmYWxzZX0)](https://mermaid-js.github.io/mermaid-live-editor/#/edit/eyJjb2RlIjoiZ3JhcGggVEQ7XG4gICAgQVtSMSxSMixSMyxSNF0tLT58YjE9MHxCW1IyLFI0XTtcbiAgICBBLS0-fGIxPTF8Q1tSMSxSMl07XG4gICAgQy0tPnxiMj0wfERbUjFdXG4gICAgQy0tPnxiMj0xfEVbUjNdXG4gICAgQi0tPnxiMz0wfEZbUjIsUjRdXG4gICAgQi0tPnxiMz0xfEdbUjJdIiwibWVybWFpZCI6eyJ0aGVtZSI6ImRlZmF1bHQifSwidXBkYXRlRWRpdG9yIjpmYWxzZX0)
 
 <details>
 <summary>See code</summary>
@@ -259,6 +261,38 @@ graph TD;
     C-->|b2=1|E[R3]
     B-->|b3=0|F[R2,R4]
     B-->|b3=1|G[R2]
+</pre>
+</details>
+
+## Third Iteration
+Because we get only one possible rule for the right side of the tree we know these are __leafs__!  
+Same story for the right side of the left sub-tree. let's check for its left side:
+
+
+Rules| b<sub>2</sub> |  b<sub>4</sub>
+-- | -- | -
+R<sub>2</sub>  | 1  | &Phi; 
+R<sub>4</sub>  | 1  | 0 
+
+> As before we get that the best pick is b<sub>4</sub> (check calculation yourself!)
+
+Finaly every nodes we reached are leafs and the decision tree looks as followed:
+
+[![](https://mermaid.ink/img/eyJjb2RlIjoiXG5ncmFwaCBURDtcbiAgICBBW1IxLFIyLFIzLFI0XS0tPnxiMT0wfEJbUjIsUjRdO1xuICAgIEEtLT58YjE9MXxDW1IxLFIyXTtcbiAgICBCLS0-fGIzPTB8RltSMixSNF1cbiAgICBCLS0-fGIzPTF8R1tSMl1cbiAgICBGLS0-fGI0PTB8SFtSMixSNF1cbiAgICBGLS0-fGI0PTF8SVtSMl1cbiAgICBDLS0-fGIyPTB8RFtSMV1cbiAgICBDLS0-fGIyPTF8RVtSM10iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlfQ)](https://mermaid-js.github.io/mermaid-live-editor/#/edit/eyJjb2RlIjoiXG5ncmFwaCBURDtcbiAgICBBW1IxLFIyLFIzLFI0XS0tPnxiMT0wfEJbUjIsUjRdO1xuICAgIEEtLT58YjE9MXxDW1IxLFIyXTtcbiAgICBCLS0-fGIzPTB8RltSMixSNF1cbiAgICBCLS0-fGIzPTF8R1tSMl1cbiAgICBGLS0-fGI0PTB8SFtSMixSNF1cbiAgICBGLS0-fGI0PTF8SVtSMl1cbiAgICBDLS0-fGIyPTB8RFtSMV1cbiAgICBDLS0-fGIyPTF8RVtSM10iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlfQ)
+
+<details>
+<summary>See code</summary>
+<br>
+<pre>
+graph TD;
+    A[R1,R2,R3,R4]-->|b1=0|B[R2,R4];
+    A-->|b1=1|C[R1,R2];
+    B-->|b3=0|F[R2,R4]
+    B-->|b3=1|G[R2]
+    F-->|b4=0|H[R2,R4]
+    F-->|b4=1|I[R2]
+    C-->|b2=0|D[R1]
+    C-->|b2=1|E[R3]
 </pre>
 </details>
 
