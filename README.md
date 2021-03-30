@@ -77,9 +77,9 @@ The returned value is a tuple of:
 |         |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |
 |---------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 5       | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 1
-| [6:7]   | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | &Phi;
-| [8:15]  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | &Phi; | &Phi; | &Phi;
-| [16:17] | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | &Phi;
+| [6:7]   | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 1 | __&Phi;__
+| [8:15]  | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | __&Phi;__ | __&Phi;__ | __&Phi;__
+| [16:17] | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 0 | __&Phi;__
 | 18      | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 | 0 | 0 | 1 | 0
 |         |   |   |   |   |
 
@@ -87,28 +87,44 @@ The returned value is a tuple of:
 Return the list of the divisions with don't cares &Phi of the range [a,b]
 ```Mathematica 
 ProcessRange[{0, 65535}] = GenerateRange[{0, 65535}];
-ProcessRange[{a_Integer, b_Integer}] := GenerateRange /@ BinaryRange[a, b] // Reverse;
+ProcessRange[{a_Integer, b_Integer}] := GenerateRange /@ BinaryRange[a, b];
 ```
 
 ### GenerateRange[{a,b}]
 Return a binary form of the range [a,b] with don't cares &Phi;
 ```Mathematica
 GenerateRange[{x_Integer, y_Integer}] /; x == y := IntegerDigits[x, 2, 16];
-GenerateRange[{x_Integer, y_Integer}] :=
-  ReplacePart[List /@ Range[Position[IntegerDigits[BitXor[x, y], 2, 16], 1][[1, 1]],
-       16] -> \[Phi]][IntegerDigits[x, 2, 16]];
+GenerateRange[{x_Integer, y_Integer}] := ReplacePart[List /@ 
+  Range[Position[IntegerDigits[BitXor[x, y], 2, 16], 1][[1, 1]], 16] ->"\[Phi]"][IntegerDigits[x, 2, 16]];
 ```
 
-### NextPart[min,max]
+### DivideByPower[min,max]
+Divide the interval according to the power of 2 -> [min,2<sup>n</sup>-1],[2<sup>n</sup>,2<sup>n+1</sup>-1]...[2<sup>m</sup>,max]
+```Mathematica
+DivideByPower[min_, max_] /; min > max := {};
+DivideByPower[min_, max_] /; PrevPerfectPower2[max] < min := {{min, max}};
+DivideByPower[min_, max_] := Prepend[DivideByPower[min, # - 1], {#, max}] &@ PrevPerfectPower2[max];
+```
+
+### DivideByEdge[min,max]
+When the interval cannot be separate with power of 2 we need to separate it cleverer
+```Mathematica
+DivideEdge[{min_, max_}] /; min > max := {};
+DivideEdge[{min_, max_}] /; EvenQ[max] := Prepend[DivideEdge[{min, max - 1}], {max, max}];
+DivideEdge[{min_, max_}] /; min == max := {{min, max}};
+DivideEdge[{min_, max_}] /; NextEdge[max] < min := DivideEdge[{min, max, 1}]
+DivideEdge[{min_, max_}] := Prepend[DivideEdge[{min, # - 1}], {#, max}] &@NextEdge[max];
+
+DivideEdge[{min_, max_, n_}] /; min > (max - n + 1) := Prepend[DivideEdge[{min, max - (n/2)}], {max - (n/2) + 1, max}];
+DivideEdge[{min_, max_, n_}] := DivideEdge[{min, max, 2 n}];
+```
+
+### NextEdge[max]
 Return the next valid {?,max} interval
 ```Mathematica
-NextPart[min_, max_?EvenQ] := max;
-NextPart[min_, max_] := FindInterval[min, PrevPerfectPower2[max], max];
-```
-```Mathematica
-FindInterval[min_, a_, b_] /; a < min := FindInterval[min, a + Length@Range[a, b]/2, b];
-FindInterval[min_, a_, b_] /; PerfectPower2[Length@Range[a, b]] := a
-FindInterval[min_, a_, b_] := FindInterval[min, a + PrevPerfectPower2[Length@Range[a, b]], b];
+NextEdge[65535] = 0;
+NextEdge[max_] := With[{num = IntegerDigits[max, 2, 16]}, 
+   FromDigits[ReplacePart[List /@ Range[Position[num, 0][[-1, -1]] + 1, 16] -> 0][num], 2]];
 ```
 
 ### Helpful Functions
@@ -124,10 +140,10 @@ PrevPerfectPower2[n_Integer?Positive] := 2^Floor[Log2[n]];
 
 Rules| b<sub>1</sub> | b<sub>2</sub> | b<sub>3</sub> | b<sub>4</sub>
 -- | - | - | -- | -
-R<sub>1</sub> | 1 | 0 | &Phi; | &Phi; 
-R<sub>2</sub> | 0 | 1 | &Phi; | &Phi; 
-R<sub>3</sub> | 1 | 1 | 0  | &Phi;
-R<sub>4</sub> | 0 | 1 | 0  | 0 
+__R<sub>1</sub>__ | 1 | 0 | &Phi; | &Phi; 
+__R<sub>2</sub>__ | 0 | 1 | &Phi; | &Phi; 
+__R<sub>3</sub>__ | 1 | 1 | 0     | &Phi;
+__R<sub>4</sub>__ | 0 | 1 | 0     | 0 
 
 > Every * (don't care) duplicate the rule &rarr; R<sub>1</sub> & R<sub>2</sub> appear 4 times, R<sub>3</sub> twice and R<sub>4</sub> only once.
 > In total it is like there are 11 rules
@@ -187,8 +203,8 @@ graph TD;
 
 Rules| b<sub>2</sub> | b<sub>3</sub> | b<sub>4</sub>
 -- | - | -- | -
-R<sub>2</sub>  | 1 | &Phi; | &Phi; 
-R<sub>4</sub>  | 1 | 0  | 0 
+__R<sub>2</sub>__  | 1 | &Phi; | &Phi; 
+__R<sub>4</sub>__  | 1 | 0  | 0 
 
 ```Mathematica
 H(Rule) = -(4/5 log2[4/5] + 1/5 log2[1/5]) = 0.721928
@@ -216,8 +232,8 @@ IG(Rule, b3) = H(rule) - H(Rule | b3) = 0.170951
 
 Rules| b<sub>2</sub> | b<sub>3</sub> | b<sub>4</sub>
 -- | - | -- | -
-R<sub>1</sub> | 0 | &Phi; | &Phi; 
-R<sub>3</sub> | 1 | 0  | &Phi;
+__R<sub>1</sub>__ | 0 | &Phi; | &Phi; 
+__R<sub>3</sub>__ | 1 | 0  | &Phi;
 
 ```Mathematica
 H(Rule) = -(4/6 log2[4/6] + 2/6 log2[2/6]) = 0.918296
@@ -271,10 +287,11 @@ Same story for the right side of the left sub-tree. let's check for its left sid
 
 Rules| b<sub>2</sub> |  b<sub>4</sub>
 -- | -- | -
-R<sub>2</sub>  | 1  | &Phi; 
-R<sub>4</sub>  | 1  | 0 
+__R<sub>2</sub>__  | 1  | &Phi; 
+__R<sub>4</sub>__  | 1  | 0 
 
-> As before we get that the best pick is b<sub>4</sub> (check calculation yourself!)
+> As before we get that the best pick is b<sub>4</sub> (check calculation yourself!)  
+> Note that two rules are still there on the last level (R<sub>2</sub> and R<sub>4</sub>). However, because they have the same probabilty to be choosen we let them as they are __(to be decided later...)__
 
 Finaly every nodes we reached are leafs and the decision tree looks as followed:
 
