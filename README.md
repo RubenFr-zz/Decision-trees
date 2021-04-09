@@ -38,35 +38,77 @@ IG(R, b_{j}) &= H(R) - \frac{N_0 + N_\Phi}{N_{tot}}H(R | b_{j}=0) - \frac{N_1 + 
 
 ### IG[list, index]
 ```Mathematica
-IG[li_List, index_Integer] :=
- Module[{list = li, i = index, Nt, N0, N1, N2, c0, c1, c2, res},
-  c0 = Drop[#, None, {i}] &@Select[list, #[[i]] == 0  &];
-  c1 = Drop[#, None, {i}] &@Select[list, #[[i]] == 1 &];
-  c2 = Drop[#, None, {i}] &@Select[list, #[[i]] == -1 &];
-  N0 = Total[2^Count[-1] /@ c0];
-  N1 = Total[2^Count[-1] /@ c1];
-  N2 = Total[2^Count[-1] /@ c2];
-  Nt = N0 + N1 + 2 N2;
-  res = log2[Nt] - ((N0 + N2) log2[N0 + N2] + (N1 + N2) log2[N1 + N2] + 2 N2)/Nt // N
-  ]
+IG[list_,i_]:= With[{
+  N0=Tr[2^Count[-1]/@Pick[list,Unitize@list[[All,i]],0]]//N,
+  N1=Tr[2^Count[-1]/@Pick[list,Unitize@(1-list[[All,i]]),0]]//N,
+  N2=((Tr[2^Count[-1]/@Pick[list,Unitize@(-1-list[[All,i]]),0]])//N)/2},
+  log2[N0+N1+2. N2]-((N0+N2) log2[N0+N2]+(N1+N2) log2[N1+N2]+2. N2)/(N0+N1+2. N2)
+]
 ```
 
+## Build a decision tree with the best IG on each branch
+
+### BuildTree1[rules, threshold]
+```Mathematica
+BuildTree1[rules_List,threshold_]:= With[{node=FindBestChoice1[rules,threshold]},AddNode1[rules,node,threshold]];
+```
+### AddNode[rules, node, threshold]
+```Mathematica
+AddNode1[rules_List,node_,_]/;node["leaf"]:= rules;
+AddNode1[_,node_,threshold_]:=<|"choice"-> node["choosen"],"right"->BuildTree1[node["right"],threshold],"left"->BuildTree1[node["left"],threshold]|>;
+```
 ### FindBestChoice[list]
 ```Mathematica
-FindBestChoice[li_List] :=
- Module[{list = li, ig, best, left0, right1},
-  ig = Table[IG[list, i], {i, 2, Length[list[[1]]]}];
-  best = Position[ig, Max[ig]][[1, 1]];
-  left0 = Drop[#, None, {best + 1}] &@Select[list, #[[best + 1]] != 1  &];
-  right1 = Drop[#, None, {best + 1}] &@Select[list, #[[best + 1]] != 0 &];
-  {best, left0, right1, Max[ig] >= 0}
-  ]
+FindBestChoice1[li_List,threshold_]/; Length[li]<= threshold+1 || Length[li[[1]]]==1 := <|"leaf"->True|>;
+FindBestChoice1[li_List,_]:= Module[{list=StripHeaders[li],ig,best,left0,right1},
+  ig=Table[IG[list,i],{i,1.,Length[list[[1]]]}];
+  best=Ordering[ig,-1][[1]]+1.;
+  left0=RemoveColumn[#,best]&@Pick[li,Join[{1},Unitize@(1-li[[2;;-1,best]])],1];
+  right1=RemoveColumn[#,best]&@Pick[li,Join[{1},Unitize@(li[[2;;-1,best]])],1];   
+  <|"choosen"->li[[1,best]],"left"->left0,"right"-> right1,"leaf"->(Max[ig]<= 0||Length@left0<=1||Length@right1<=1)|>
+]
 ```
 The returned value is a tuple of:
 * The best choice
 * The sublist of rules for which b<sub>best choice</sub> = 0 or &Phi;
 * The sublist of rules for which b<sub>best choice</sub> = 1 or &Phi;
-* Do we need to continue decending ? If <kbd>true</kbd> that means we can improve the tree. If <kbd>false</kbd> that means the current level is a leaf.
+* Is the current level a leaf ?
+  * If <kbd>true</kbd> that means we cannot improve the sub-tree.
+  * If <kbd>false</kbd> that means can continue
+
+## Build a decision tree with the best IG on each level
+
+### BuildTree2[rules, threshold]
+```Mathematica
+BuildTree2[DT_,choices_,level_,threshold_]:= With[{best=FindBestChoice2[Values[DT],threshold]},
+AddNode2[DT,choices,best,level+1,threshold]];
+```
+### AddNode[DT, choices, best, level, threshold]
+```Mathematica
+AddNode2[DT_,choices_,-1,level_,_]:=<|"DT"->DT,"choices"->choices|>;
+AddNode2[DT_,choices_,best_,level_,threshold_]:= BuildTree2[
+  With[{keys=IntegerDigits[Range[0,(2^level)-1],2,level]},
+    AssociationThread[keys,Table[RemoveColumn[#,best]&@Pick[DT[i[[;;-2]]],Join[{1},Unitize@(DT[i[[;;-2]]][[2;;-1,best]]-(1-i[[-1]]))],1],{i,keys}]]],
+      Append[choices,DT[ConstantArray[0,level-1]][[1,best]]], level, threshold]
+```
+### FindBestChoice[list]
+```Mathematica
+FindBestChoice2[lst_List,threshold_]/; Mean[N[Length/@lst]]<=threshold+1|| Length[lst[[1,1]]]== 1:=-1
+FindBestChoice2[lst_List,_]:= Module[{list=StripHeaders[#]&/@lst,ig,best},
+  ig=Table[IG[#,i],{i,1.,Length[#[[1]]]}]&/@list;
+  best=(With[{b=Ordering[#,-1][[1]]},{#[[b]],b+1}]&/@ig);
+  best[[Ordering[best[[All,1]],-1][[1]],2]]
+  ]
+```
+The returned value of this function is the index of the best choice to build the tree
+
+## Build Tree
+
+```Mathematica
+BuildTree[rules_List,threshold_,"Branch"]:= BuildTree1[rules,threshold];
+BuildTree[rules_List,threshold_,"Level"]:= With[{first=FindBestChoice1[rules,threshold]},
+  BuildTree2[<|{0}->first["left"],{1}->first["right"]|>,{first["choosen"]},1,threshold]];
+```
 
 ## Binary range with don't cares
 
@@ -317,7 +359,12 @@ graph TD;
 
 ---
 
-# Trics in Mathematica
+# Usefull Functions in Mathematica
+
+## Add Column to a matrix
+```Mathematica
+
+```
 
 ## Remove Column from matrix
 Remove 2nd column of random matrix of dimensions 6x4 &rarr; result dimensions: 6x3 
